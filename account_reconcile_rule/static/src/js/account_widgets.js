@@ -23,7 +23,7 @@ odoo.define("account_reconcile_rule", function(require) {
                 model: "account.reconcile.rule",
                 method: "models_for_reconciliation",
                 args: [line.st_line.id, _.pluck(line.reconciliation_proposition, "id")],
-            }).done(function(rule_models) {
+            }).then(function(rule_models) {
                 // Loop on each models and create the corresponding write off
                 // entries
                 _.each(rule_models, function(rule_model_id) {
