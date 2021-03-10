@@ -38,7 +38,7 @@ odoo.define("account_reconcile_rule", function(require) {
             var self = this;
             var deferred = this._super();
             if (deferred) {
-                deferred.done(this.reconciliation_rule_models());
+                deferred.then(this.reconciliation_rule_models());
             }
             return deferred;
         },
