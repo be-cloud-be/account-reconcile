@@ -149,4 +149,4 @@ class AccountReconcileRule(models.Model):
         statement_line = line_obj.browse(statement_line_id)
         move_lines = move_line_obj.browse(move_line_ids)
         rules = self.find_first_rule(statement_line, move_lines)
-        return rules.reconcile_model_ids
+        return rules.reconcile_model_ids.ids
