@@ -4,9 +4,6 @@
 
 from odoo import api, fields, models
 
-from odoo.addons import decimal_precision as dp
-
-
 class AccountReconcileRule(models.Model):
     _name = "account.reconcile.rule"
     _description = "Rules for reconciliation"
@@ -22,8 +19,8 @@ class AccountReconcileRule(models.Model):
     reconcile_model_ids = fields.Many2many(
         comodel_name="account.reconcile.model", string="Reconciliation models",
     )
-    amount_min = fields.Float(string="Min. Amount", digits=dp.get_precision("Account"),)
-    amount_max = fields.Float(string="Max. Amount", digits=dp.get_precision("Account"),)
+    amount_min = fields.Float(string="Min. Amount", digits="Account")
+    amount_max = fields.Float(string="Max. Amount", digits="Account")
     currency_ids = fields.Many2many(
         comodel_name="res.currency",
         string="Currencies",
@@ -47,8 +44,8 @@ class AccountReconcileRule(models.Model):
             return False
         return True
 
-    @api.multi
     def _balance_in_range(self, balance, currency):
+        self.ensure_one()
         return self._between_with_bounds(
             self.amount_min, balance, self.amount_max, currency
         )
@@ -59,14 +56,14 @@ class AccountReconcileRule(models.Model):
         company_currency = statement_line.company_id.currency_id
         return currency != company_currency
 
-    @api.multi
     def _is_valid_balance(self, statement_line, balance):
+        self.ensure_one()
         if self._is_multicurrency(statement_line):
             return False
         currency = statement_line.currency_for_rules()
         return self._balance_in_range(balance, currency)
 
-    @api.multi
+
     def _is_valid_multicurrency(self, statement_line, move_lines, balance):
         """Check if the multi-currency rule can be applied.
 
@@ -76,6 +73,7 @@ class AccountReconcileRule(models.Model):
         * The balance of the amount currencies is 0
         * The balance is between the bounds configured on the rule
         """
+        self.ensure_one()
         if not self._is_multicurrency(statement_line):
             return False
         currency = statement_line.currency_for_rules()
@@ -94,7 +92,6 @@ class AccountReconcileRule(models.Model):
             return self._balance_in_range(balance, currency)
         return False
 
-    @api.multi
     def is_valid(self, statement_line, move_lines, balance):
         """Check if a rule applies to a group of statement_line + move lines.
 
@@ -139,7 +136,6 @@ class AccountReconcileRule(models.Model):
         return self.browse()
 
     @api.model
-    @api.returns("account.reconcile.model")
     def models_for_reconciliation(self, statement_line_id, move_line_ids):
         """Find the reconcile models for the for given statement and move lines.
 

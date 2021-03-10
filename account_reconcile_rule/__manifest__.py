@@ -5,7 +5,7 @@
 
 {
     "name": "Account Reconcile Rules",
-    "version": "12.0.1.0.0",
+    "version": "13.0.1.0.0",
     "author": "Camptocamp, Odoo Community Association (OCA)",
     "maintainer": "Odoo Community Association (OCA)",
     "license": "AGPL-3",

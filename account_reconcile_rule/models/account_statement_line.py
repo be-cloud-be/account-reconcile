@@ -9,6 +9,6 @@ from odoo import api, models
 class AccountBankStatementLine(models.Model):
     _inherit = "account.bank.statement.line"
 
-    @api.multi
     def currency_for_rules(self):
+        self.ensure_one()
         return self.currency_id or self.statement_id.currency_id
